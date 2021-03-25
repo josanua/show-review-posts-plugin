@@ -9,7 +9,7 @@
  * Plugin Name:       Show review posts
  * Plugin URI:        simpals.com
  * Description:       This is a custom plugin for show posts from desired category
- * Version:           1.1.0
+ * Version:           1.1.2
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'SHOW_REVIEW_POSTS_VERSION', '1.1.0' );
+define( 'SHOW_REVIEW_POSTS_VERSION', '1.1.2' );
 define( 'PHP_REQUIRES_VERSION', '7.2' );
 define( 'PLUGIN_SLUG', 'srp' );
 
@@ -673,15 +673,22 @@ function srp_save_link_text_meta( $post_id, $post ) {
 /**
  * Plugin update functions
  */
+//require dirname( __FILE__ ) . '/plugin-update-checker/plugin-update-checker.php';
+//$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+//	'http://localhost/server_plugin_update/plugin.json',
+//	__FILE__, //Full path to the main plugin file or functions.php.
+//	'show_review_posts'
+//);
+
 require dirname( __FILE__ ) . '/plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	'http://localhost/server_plugin_update/plugin.json',
-	__FILE__, //Full path to the main plugin file or functions.php.
+	'https://github.com/josanua/show-review-posts-plugin.git',
+	__FILE__,
 	'show_review_posts'
 );
 
 //Optional: If you're using a private repository, specify the access token like this:
-$myUpdateChecker->setAuthentication('your-token-here');
+$myUpdateChecker->setAuthentication('7f60dfadd6224151b7845bc57ed93728332b6adc');
 
 //Optional: Set the branch that contains the stable release.
-$myUpdateChecker->setBranch('stable-branch-name');
+$myUpdateChecker->setBranch('show-review-posts-main-branch');
