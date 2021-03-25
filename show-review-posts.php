@@ -6,10 +6,10 @@
  * @package           show_review_posts
  *
  * @wordpress-plugin
- * Plugin Name:       Show review posts
+ * Plugin Name:       Hapigood reviews plugin
  * Plugin URI:        simpals.com
  * Description:       This is a custom plugin for show posts from desired category
- * Version:           1.1.3
+ * Version:           1.1.4
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'SHOW_REVIEW_POSTS_VERSION', '1.1.3' );
+define( 'SHOW_REVIEW_POSTS_VERSION', '1.1.4' );
 define( 'PHP_REQUIRES_VERSION', '7.2' );
 define( 'PLUGIN_SLUG', 'srp' );
 
@@ -682,7 +682,7 @@ function srp_save_link_text_meta( $post_id, $post ) {
 
 require dirname( __FILE__ ) . '/plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	'https://github.com/josanua/show-review-posts-plugin.git',
+	'https://github.com/josanua/show-review-posts-plugin',
 	__FILE__,
 	'show_review_posts'
 );
@@ -691,4 +691,4 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 $myUpdateChecker->setAuthentication('7f60dfadd6224151b7845bc57ed93728332b6adc');
 
 //Optional: Set the branch that contains the stable release.
-$myUpdateChecker->setBranch('show-review-posts-main-branch');
+$myUpdateChecker->setBranch('main');
