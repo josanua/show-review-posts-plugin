@@ -9,7 +9,7 @@
  * Plugin Name:       Show review posts
  * Plugin URI:        simpals.com
  * Description:       This is a custom plugin for show posts from desired category
- * Version:           1.1.2
+ * Version:           1.1.3
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'SHOW_REVIEW_POSTS_VERSION', '1.1.2' );
+define( 'SHOW_REVIEW_POSTS_VERSION', '1.1.3' );
 define( 'PHP_REQUIRES_VERSION', '7.2' );
 define( 'PLUGIN_SLUG', 'srp' );
 
