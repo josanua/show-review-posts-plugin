@@ -117,6 +117,7 @@ Black 			- 900
 	box-sizing    :border-box !important;
 	background    :#FFFFFF !important;
 	margin-bottom :17px !important;
+	text-align: left !important;
 }
 
 .review-posts-entry-header{

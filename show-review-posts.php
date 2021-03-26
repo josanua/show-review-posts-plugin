@@ -8,8 +8,8 @@
  * @wordpress-plugin
  * Plugin Name:       Hapigood reviews plugin
  * Plugin URI:        simpals.com
- * Description:       This is a custom plugin for show posts from desired category
- * Version:           1.1.4
+ * Description:       This is a custom Hapigood plugin for reviews showing
+ * Version:           1.2.0
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -23,14 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'SHOW_REVIEW_POSTS_VERSION', '1.1.4' );
-define( 'PHP_REQUIRES_VERSION', '7.2' );
-define( 'PLUGIN_SLUG', 'srp' );
 
 /**
  * Begins execution of the plugin.
@@ -44,17 +36,26 @@ define( 'PLUGIN_SLUG', 'srp' );
 
 
 /**
+ * Currently plugin version.
+ * Start at version 1.0.0 and use SemVer - https://semver.org
+ * Rename this for your plugin and update it as you release new versions.
+ */
+define( 'SHOW_REVIEW_POSTS_VERSION', '1.2.0' );
+define( 'PHP_REQUIRES_VERSION', '7.2' );
+define( 'PLUGIN_SLUG', 'srp' );
+
+
+/**
  * Include files
  */
 require_once dirname( __FILE__ ) . '/show-review-posts-admin.php';
-//include( dirname( __FILE__ ) . '/update.php' );
 
 
 /**
  * Required Hooks
  */
-register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
 register_activation_hook( __FILE__, 'srp_flush_rewrites' );
+register_deactivation_hook( __FILE__, 'srp_flush_rewrite_rules' );
 
 
 /**
@@ -67,29 +68,12 @@ function srp_flush_rewrites() {
 }
 
 
-// test fillter
-//add_filter ('pre_set_site_transient_update_plugins', 'display_transient_update_plugins');
-function display_transient_update_plugins( $transient ) {
-	var_dump( $transient );
-}
-
-
 /**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-show_custom_posts_-activator.php
+ * Flush rewrite rules on deactivation
  */
-function srp_activate_show_review_posts() {
+function srp_flush_rewrite_rules() {
+	flush_rewrite_rules();
 }
-
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-show_custom_posts_-deactivator.php
- */
-function srp_deactivate_show_review_posts() {
-}
-
-// register_activation_hook( __FILE__, 'sr_activate_show_review_posts' );
-// register_deactivation_hook( __FILE__, 'sr_deactivate_show_review_posts' );
 
 
 /**
@@ -204,19 +188,20 @@ if ( ! function_exists( 'srp_create_reviews_taxonomy' ) ) {
 			'items_list'                 => __( 'Items list', 'show_review_posts' ),
 			'items_list_navigation'      => __( 'Items list navigation', 'show_review_posts' ),
 		);
-		$args = array(
-			'labels'                     => $labels,
-			'hierarchical'               => true,
-			'public'                     => true,
-			'show_ui'                    => true,
-			'show_admin_column'          => true,
-			'show_in_nav_menus'          => true,
-			'show_tagcloud'              => false,
-			'show_in_rest'               => true,
+		$args   = array(
+			'labels'            => $labels,
+			'hierarchical'      => true,
+			'public'            => true,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'show_in_nav_menus' => true,
+			'show_tagcloud'     => false,
+			'show_in_rest'      => true,
 		);
 		register_taxonomy( 'srp_review_tax_cat', array( 'srp_review_posts' ), $args );
 
 	}
+
 	add_action( 'init', 'srp_create_reviews_taxonomy', 0 );
 
 }
@@ -230,20 +215,17 @@ if ( ! function_exists( 'srp_create_reviews_taxonomy' ) ) {
 function srp_generate_review_posts( $atts ) {
 
 	// default values
-//	define( 'DEFAULT_REVIEWS_LINK', get_home_url() . '/reviews/' );
+	// define( 'DEFAULT_REVIEWS_LINK', get_home_url() . '/reviews/' );
 
 	// default attributes
 	$atts = shortcode_atts( [
-		'show_on_home'      => 0,
-		'posts_per_page'    => 5,
-		'category_id'       => '',
-//		'more_reviews_link' => DEFAULT_REVIEWS_LINK,
-//		'post_type'         => 'srp_review_posts',
+		'show_on_home'   => 0,
+		'posts_per_page' => 5,
+		'category_id'    => '',
 	], $atts );
 
 	// get setup values
 	$show_on_home_state = intval( trim( $atts['show_on_home'] ) );
-	// $post_type_slug     = trim( $atts['post_type'] );
 	$post_type_slug     = 'srp_review_posts';
 	$category_id        = trim( $atts['category_id'] );
 	$posts_per_page     = $atts['posts_per_page']; // it must be a string type!
@@ -251,7 +233,7 @@ function srp_generate_review_posts( $atts ) {
 	// custom query args setup
 	$currentPage = get_query_var( 'paged' );
 	$args        = array(
-	  'post_type'      => $post_type_slug ,
+		'post_type'      => $post_type_slug,
 		'post_status'    => 'publish',
 		'orderby'        => 'date',
 		'order'          => 'DESC',
@@ -264,8 +246,8 @@ function srp_generate_review_posts( $atts ) {
 	ob_start();
 
 	// take plugin options
-	$options_main_link   = get_option( 'srp_options' );
-	$options_review_link = get_option( 'srp_review_link_option' );
+	$options_main_link         = get_option( 'srp_options' );
+	$options_review_link       = get_option( 'srp_review_link_option' );
 	$options_more_reviews_link = get_option( 'srp_more_reviews_link_option' );
 	?>
 
@@ -299,71 +281,71 @@ function srp_generate_review_posts( $atts ) {
 									<b>by</b>
 									<?php
 
-										// get author name
-										if ( ! empty( $post_id ) ) {
+				  // get author name
+				  if ( ! empty( $post_id ) ) {
 
-											// Get the custom post class.
-											$review_author_name = get_post_meta( $post_id, 'srp_author_name_meta', true );
+					  // Get the custom post class.
+					  $review_author_name = get_post_meta( $post_id, 'srp_author_name_meta', true );
 
-											// If a post class was input, sanitize it and add it to the post class array.
-											if ( ! empty( $review_author_name ) ) {
-												echo $review_author_name;
-											} else {
-												echo get_the_author();
-											}
-										}
+					  // If a post class was input, sanitize it and add it to the post class array.
+					  if ( ! empty( $review_author_name ) ) {
+						  echo $review_author_name;
+					  } else {
+						  echo get_the_author();
+					  }
+				  }
 
-										?>
+				  ?>
 								</span>
 
 
-								<?php
-								// get link address
-								if ( ! empty( $post_id ) ) {
+				  <?php
+				  // get link address
+				  if ( ! empty( $post_id ) ) {
 
-									// Get the custom post class.
-									$author_description_text = get_post_meta( $post_id, 'srp_author_description_meta', true );
+					  // Get the custom post class.
+					  $author_description_text = get_post_meta( $post_id, 'srp_author_description_meta', true );
 
-									// If a post class was input, sanitize it and add it to the post class array.
-									if ( ! empty( $author_description_text )   ) { ?>
-										<span class="review-author-description">
+					  // If a post class was input, sanitize it and add it to the post class array.
+					  if ( ! empty( $author_description_text ) ) { ?>
+												<span class="review-author-description">
 											<?php echo $author_description_text ?>
 										</span>
-									<?php }
-								}
-								?>
+					  <?php }
+				  }
+				  ?>
 
 								<span class="review-posts-date">
 									<?php the_time( 'd / m / y' ); ?>
 								</span>
 
 
-							<?php
-							// get link address
-							if ( ! empty( $post_id ) ) {
+				  <?php
+				  // get link address
+				  if ( ! empty( $post_id ) ) {
 
-								// Get the custom post class.
-								$review_link = get_post_meta( $post_id, 'srp_review_link_meta', true );
-								$review_link_text = get_post_meta( $post_id, 'srp_review_link_text_meta', true );
+					  // Get the custom post class.
+					  $review_link      = get_post_meta( $post_id, 'srp_review_link_meta', true );
+					  $review_link_text = get_post_meta( $post_id, 'srp_review_link_text_meta', true );
 
-								// If a post class was input, sanitize it and add it to the post class array.
-								if ( ! empty( $review_link ) && ! empty( $review_link_text )  ) { ?>
-														<a href="<?php echo $review_link ?>" class="review-posts-link-to-source" target="_blank">
-									<?php echo $review_link_text ?>
-														</a>
-								<?php }
-							}
-							?>
+					  // If a post class was input, sanitize it and add it to the post class array.
+					  if ( ! empty( $review_link ) && ! empty( $review_link_text ) ) { ?>
+												<a href="<?php echo $review_link ?>" class="review-posts-link-to-source" target="_blank">
+							<?php echo $review_link_text ?>
+												</a>
+					  <?php }
+				  }
+				  ?>
 							</header><!-- .review-posts-entry-header -->
 
 							<div class="review-posts-entry-content">
 								<p>
-				  				<?php echo wp_trim_words( get_the_excerpt(), 30, __( ' ...' ) ); ?>
+					<?php echo wp_trim_words( get_the_excerpt(), 30, __( ' ...' ) ); ?>
 								</p>
 							</div><!-- .review-posts-entry-content -->
 
 							<div class="review-posts-full-content">
-				  			<?php the_content(); ?>
+				  <?php the_content(); ?>
 							</div><!-- .eview-posts-full-content -->
 
 							<footer class="review-posts-entry-footer">
@@ -393,9 +375,9 @@ function srp_generate_review_posts( $atts ) {
 
 	  if ( $show_on_home_state != 0 ) :
 
-		    ?>
+		  ?>
 				<a href="<?php echo $options_more_reviews_link['srp_more_reviews_link_field'] ?>" class="more-button">
-					<?php _e( 'More reviews', 'show_review_posts' ); ?>
+			<?php _e( 'More reviews', 'show_review_posts' ); ?>
 				</a>
 	  <?php endif; ?>
 	</div>
@@ -421,10 +403,7 @@ function srp_meta_boxes_setup() {
 	add_action( 'add_meta_boxes', 'srp_add_post_meta_boxes' );
 
 	/* Save post meta on the 'save_post' hook. */
-	add_action( 'save_post', 'srp_save_author_meta', 10, 2 );
-	add_action( 'save_post', 'srp_save_author_description_meta', 10, 2 );
-	add_action( 'save_post', 'srp_save_link_meta', 10, 2 );
-	add_action( 'save_post', 'srp_save_link_text_meta', 10, 2 );
+	add_action( 'save_post', 'srp_save_review_meta', 10, 2 );
 }
 
 
@@ -432,45 +411,26 @@ function srp_meta_boxes_setup() {
 function srp_add_post_meta_boxes() {
 
 	add_meta_box(
-		'srp-review-author-name',                                       // Unique ID
-		esc_html__( 'Review author', 'show_review_posts' ),      // Title
-		'srp_review_author_meta_box_html',                          // Callback function
-		'srp_review_posts',                            // Admin page (or post type)
-		'side',                                      // Context
-		'default'                                      // Priority
+		'srp-review-author-name',                                          // Unique ID
+		esc_html__( 'Review author', 'show_review_posts' ),       // Title
+		'srp_reviews_meta_box_html',                            // Callback function
+		'srp_review_posts',                                            // Admin page (or post type)
+		'side',                                                        // Context
+		'default'                                                      // Priority
 	);
-
-	add_meta_box(
-		'srp-review-author-description',
-		esc_html__( 'Review author description', 'show_review_posts' ),
-		'srp_review_author_description_meta_box_html',
-		'srp_review_posts',
-		'side',
-		'default'
-	);
-
-	add_meta_box(
-		'srp-review-link',
-		esc_html__( 'Review Link', 'show_review_posts' ),
-		'srp_review_link_meta_box_html',
-		'srp_review_posts',
-		'side',
-		'default'
-	);
-
-	add_meta_box(
-		'srp-review-link-text',
-		esc_html__( 'Review Link Text', 'show_review_posts' ),
-		'srp_review_link_text_meta_box_html',
-		'srp_review_posts',
-		'side',
-		'default'
-	);
-
 }
 
 // Display the author post meta box.
-function srp_review_author_meta_box_html( $post ) { ?>
+//TODO: de imbunatatit forma, eliminare p-uri, eroare consola,
+//TODO: nonce de vazut ce-i
+function srp_reviews_meta_box_html( $post ) {
+
+	$srp_author_name_meta        = esc_attr( get_post_meta( $post->ID, 'srp_author_name_meta', true ) );
+	$srp_author_description_meta = esc_attr( get_post_meta( $post->ID, 'srp_author_description_meta', true ) );
+	$srp_review_link_meta        = esc_attr( get_post_meta( $post->ID, 'srp_review_link_meta', true ) );
+	$srp_review_link_text_meta   = esc_attr( get_post_meta( $post->ID, 'srp_review_link_text_meta', true ) );
+
+	?>
 
 	<?php //wp_nonce_field( basename( __FILE__ ), 'srp_author_name_meta_nonce' ); ?>
 
@@ -480,14 +440,8 @@ function srp_review_author_meta_box_html( $post ) { ?>
 		</label>
 		<br/>
 		<input class="widefat" type="text" name="srp-review-author-name" id="srp-review-author-name"
-					 value="<?php echo esc_attr( get_post_meta( $post->ID, 'srp_author_name_meta', true ) ); ?>"/>
+					 value="<?php echo $srp_author_name_meta; ?>"/>
 	</p>
-<?php }
-
-// Display the author description post meta box.
-function srp_review_author_description_meta_box_html( $post ) { ?>
-
-	<?php //wp_nonce_field( basename( __FILE__ ), 'srp_author_name_meta_nonce' ); ?>
 
 	<p>
 		<label for="srp-review-author-description">
@@ -495,191 +449,118 @@ function srp_review_author_description_meta_box_html( $post ) { ?>
 		</label>
 		<br/>
 		<input class="widefat" type="text" name="srp-review-author-description" id="srp-review-author-description"
-					 value="<?php echo esc_attr( get_post_meta( $post->ID, 'srp_author_description_meta', true ) ); ?>"/>
+					 value="<?php echo $srp_author_description_meta ?>"/>
 	</p>
-<?php }
-
-// Display the review link meta box.
-function srp_review_link_meta_box_html( $post ) { ?>
-
-	<?php //wp_nonce_field( basename( __FILE__ ), 'srp_author_name_meta_nonce' ); ?>
 
 	<p>
 		<label for="srp-review-link">
-		<?php _e( "Link:", 'show_review_posts' ); ?>
+		<?php _e( "Review Link:", 'show_review_posts' ); ?>
 		</label>
 		<br/>
 		<input class="widefat" type="text" name="srp-review-link" id="srp-review-link"
-					 value="<?php echo esc_attr( get_post_meta( $post->ID, 'srp_review_link_meta', true ) ); ?>"/>
+					 value="<?php echo $srp_review_link_meta ?>"/>
 	</p>
-<?php }
-
-// Display the review link text meta box.
-function srp_review_link_text_meta_box_html( $post ) { ?>
-
-	<?php //wp_nonce_field( basename( __FILE__ ), 'srp_author_name_meta_nonce' ); ?>
 
 	<p>
 		<label for="srp-review-link-text">
-		<?php _e( "Display:", 'show_review_posts' ); ?>
+		<?php _e( "Review Link Text:", 'show_review_posts' ); ?>
 		</label>
 		<br/>
 		<input class="widefat" type="text" name="srp-review-link-text" id="srp-review-link-text"
-					 value="<?php echo esc_attr( get_post_meta( $post->ID, 'srp_review_link_text_meta', true ) ); ?>"/>
+					 value="<?php echo $srp_review_link_text_meta ?>"/>
 	</p>
 <?php }
 
+
 // Save the Author post metadata.
-function srp_save_author_meta( $post_id, $post ) {
+function srp_save_review_meta( $post_id, $post ) {
 
 	/* Verify the nonce before proceeding. */
+//		TODO: de vazut aici ce-i
 //	if ( ! isset( $_POST['srp_author_name_meta_nonce'] ) || ! wp_verify_nonce( $_POST['srp_author_name_meta_nonce'], basename( __FILE__ ) ) ) {
 //		return $post_id;
+//	}// Check if user has permissions to save data.
+
+	/* Get the post type object. */
+	$post_type = get_post_type_object( $post->post_type );
+
+	// Check if not an autosave.
+	if ( wp_is_post_autosave( $post_id ) ) {
+		return $post_id;
+	}
+
+	// Check if not a revision.
+	if ( wp_is_post_revision( $post_id ) ) {
+		return $post_id;
+	}
+
+	/* Check if the current user has permission to edit the post. */
+	if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
+		return $post_id;
+	}
+
+	// Do not save the data if autosave
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return $post_id;
+	}
+
+	/* Get the posted data and sanitize it for use as an HTML class. */
+	$new_meta_value_author_name        = isset( $_POST['srp-review-author-name'] ) ? sanitize_text_field( $_POST['srp-review-author-name'] ) : '';
+	$new_meta_value_author_description = isset( $_POST['srp-review-author-description'] ) ? sanitize_text_field( $_POST['srp-review-author-description'] ) : '';
+	$new_meta_value_review_link        = isset( $_POST['srp-review-link'] ) ? sanitize_text_field( $_POST['srp-review-link'] ) : '';
+	$new_meta_value_review_link_text   = isset( $_POST['srp-review-link-text'] ) ? sanitize_text_field( $_POST['srp-review-link-text'] ) : '';
+
+	/* Get the meta key. */
+	$meta_key_author_name        = 'srp_author_name_meta';
+	$meta_key_author_description = 'srp_author_description_meta';
+	$meta_key_review_link        = 'srp_review_link_meta';
+	$meta_key_review_link_text   = 'srp_review_link_text_meta';
+
+	/* Get the meta value */
+	$meta_value_author_name        = get_post_meta( $post_id, $meta_key_author_name, true );
+	$meta_value_author_description = get_post_meta( $post_id, $meta_key_author_description, true );
+	$meta_value_review_link        = get_post_meta( $post_id, $meta_key_review_link, true );
+	$meta_value_review_link_text   = get_post_meta( $post_id, $meta_key_review_link_text, true );
+
+
+	/* If a new meta value was added and does not match the old value, add it. */
+	if ( isset( $new_meta_value_author_name ) && $new_meta_value_author_name != $meta_value_author_name ) {
+		update_post_meta( $post_id, $meta_key_author_name, $new_meta_value_author_name );
+	}
+
+	/* If a new meta value was added and does not match the old value, add it. */
+	if ( isset( $new_meta_value_author_description ) && $new_meta_value_author_description != $meta_value_author_description ) {
+		update_post_meta( $post_id, $meta_key_author_description, $new_meta_value_author_description );
+	}
+
+	/* If a new meta value was added and does not match the old value, add it. */
+	if ( isset( $new_meta_value_review_link ) && $new_meta_value_review_link != $meta_value_review_link ) {
+		update_post_meta( $post_id, $meta_key_review_link, $new_meta_value_review_link );
+	}
+
+	/* If a new meta value was added and does not match the old value, add it. */
+	if ( isset( $new_meta_value_review_link_text ) && $new_meta_value_review_link_text != $meta_value_review_link_text ) {
+		update_post_meta( $post_id, $meta_key_review_link_text, $new_meta_value_review_link_text );
+	}
+
+
+// old code
+	/* If a new meta value was added and there was no previous value, add it. */
+//	if ( $new_meta_value_author_description && ’ == $meta_value_author_description ) {
+//		add_post_meta( $post_id, $meta_key_author_description, $new_meta_value_author_description, true );
+//	} /* If the new meta value does not match the old value, update it. */
+//		elseif ( $new_meta_value_author_description && $new_meta_value_author_description != $meta_value_author_description ) {
+//		update_post_meta( $post_id, $meta_key_author_description, $new_meta_value_author_description );
+//	} /* If there is no new meta value but an old value exists, delete it. */
+//		elseif ( ’ == $new_meta_value_author_description && $meta_value_author_description ) {
+//		delete_post_meta( $post_id, $meta_key_author_description, $meta_value_author_description );
 //	}
-
-	/* Get the post type object. */
-	$post_type = get_post_type_object( $post->post_type );
-
-	/* Check if the current user has permission to edit the post. */
-	if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
-		return $post_id;
-	}
-
-	/* Get the posted data and sanitize it for use as an HTML class. */
-	// $new_meta_value = ( isset( $_POST['srp-review-author-name'] ) ? sanitize_html_class( $_POST['srp-review-author-name'] ) : ’ );
-	$new_meta_value = $_POST['srp-review-author-name'];
-
-	/* Get the meta key. */
-	$meta_key = 'srp_author_name_meta';
-
-	/* Get the meta value of the custom field key. */
-	$meta_value = get_post_meta( $post_id, $meta_key, true );
-
-	/* If a new meta value was added and there was no previous value, add it. */
-	if ( $new_meta_value && ’ == $meta_value ) {
-		add_post_meta( $post_id, $meta_key, $new_meta_value, true );
-	} /* If the new meta value does not match the old value, update it. */
-		elseif ( $new_meta_value && $new_meta_value != $meta_value ) {
-		update_post_meta( $post_id, $meta_key, $new_meta_value );
-	} /* If there is no new meta value but an old value exists, delete it. */
-		elseif ( ’ == $new_meta_value && $meta_value ) {
-		delete_post_meta( $post_id, $meta_key, $meta_value );
-	}
-}
-
-// Save the Author Description post metadata.
-function srp_save_author_description_meta( $post_id, $post ) {
-
-	/* Verify the nonce before proceeding. */
-//	if ( ! isset( $_POST['srp_author_name_meta_nonce'] ) || ! wp_verify_nonce( $_POST['srp_author_name_meta_nonce'], basename( __FILE__ ) ) ) {
-//		return $post_id;
-//	}
-
-	/* Get the post type object. */
-	$post_type = get_post_type_object( $post->post_type );
-
-	/* Check if the current user has permission to edit the post. */
-	if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
-		return $post_id;
-	}
-
-	/* Get the posted data and sanitize it for use as an HTML class. */
-	// $new_meta_value = ( isset( $_POST['srp-review-author-name'] ) ? sanitize_html_class( $_POST['srp-review-author-name'] ) : ’ );
-	$new_meta_value = $_POST['srp-review-author-description'];
-
-	/* Get the meta key. */
-	$meta_key = 'srp_author_description_meta';
-
-	/* Get the meta value of the custom field key. */
-	$meta_value = get_post_meta( $post_id, $meta_key, true );
-
-	/* If a new meta value was added and there was no previous value, add it. */
-	if ( $new_meta_value && ’ == $meta_value ) {
-		add_post_meta( $post_id, $meta_key, $new_meta_value, true );
-	} /* If the new meta value does not match the old value, update it. */
-		elseif ( $new_meta_value && $new_meta_value != $meta_value ) {
-		update_post_meta( $post_id, $meta_key, $new_meta_value );
-	} /* If there is no new meta value but an old value exists, delete it. */
-		elseif ( ’ == $new_meta_value && $meta_value ) {
-		delete_post_meta( $post_id, $meta_key, $meta_value );
-	}
-}
-
-// Save the link post metadata.
-function srp_save_link_meta( $post_id, $post ) {
-
-	/* Get the post type object. */
-	$post_type = get_post_type_object( $post->post_type );
-
-	/* Check if the current user has permission to edit the post. */
-	if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
-		return $post_id;
-	}
-
-	/* Get the posted data and sanitize it for use as an HTML class. */
-	$new_meta_value = $_POST['srp-review-link'];
-
-	/* Get the meta key. */
-	$meta_key = 'srp_review_link_meta';
-
-	/* Get the meta value of the custom field key. */
-	$meta_value = get_post_meta( $post_id, $meta_key, true );
-
-	/* If a new meta value was added and there was no previous value, add it. */
-	if ( $new_meta_value && ’ == $meta_value ) {
-		add_post_meta( $post_id, $meta_key, $new_meta_value, true );
-	} /* If the new meta value does not match the old value, update it. */
-		elseif ( $new_meta_value && $new_meta_value != $meta_value ) {
-		update_post_meta( $post_id, $meta_key, $new_meta_value );
-	} /* If there is no new meta value but an old value exists, delete it. */
-		elseif ( ’ == $new_meta_value && $meta_value ) {
-		delete_post_meta( $post_id, $meta_key, $meta_value );
-	}
-}
-
-// Save the link text post metadata.
-function srp_save_link_text_meta( $post_id, $post ) {
-
-	/* Get the post type object. */
-	$post_type = get_post_type_object( $post->post_type );
-
-	/* Check if the current user has permission to edit the post. */
-	if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
-		return $post_id;
-	}
-
-	/* Get the posted data and sanitize it for use as an HTML class. */
-	$new_meta_value = $_POST['srp-review-link-text'];
-
-	/* Get the meta key. */
-	$meta_key = 'srp_review_link_text_meta';
-
-	/* Get the meta value of the custom field key. */
-	$meta_value = get_post_meta( $post_id, $meta_key, true );
-
-	/* If a new meta value was added and there was no previous value, add it. */
-	if ( $new_meta_value && ’ == $meta_value ) {
-		add_post_meta( $post_id, $meta_key, $new_meta_value, true );
-	} /* If the new meta value does not match the old value, update it. */
-		elseif ( $new_meta_value && $new_meta_value != $meta_value ) {
-		update_post_meta( $post_id, $meta_key, $new_meta_value );
-	} /* If there is no new meta value but an old value exists, delete it. */
-		elseif ( ’ == $new_meta_value && $meta_value ) {
-		delete_post_meta( $post_id, $meta_key, $meta_value );
-	}
 }
 
 
 /**
  * Plugin update functions
  */
-//require dirname( __FILE__ ) . '/plugin-update-checker/plugin-update-checker.php';
-//$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-//	'http://localhost/server_plugin_update/plugin.json',
-//	__FILE__, //Full path to the main plugin file or functions.php.
-//	'show_review_posts'
-//);
-
 require dirname( __FILE__ ) . '/plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 	'https://github.com/josanua/show-review-posts-plugin',
@@ -691,4 +572,4 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 // $myUpdateChecker->setAuthentication('');
 
 //Set the branch that contains the stable release. 
-$myUpdateChecker->setBranch('main');
+$myUpdateChecker->setBranch( 'main' );
