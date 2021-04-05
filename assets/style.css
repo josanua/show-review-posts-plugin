@@ -71,7 +71,7 @@ Black 			- 900
 }
 
 .show-review-posts-row .logos-img{
-	height          :80px !important;
+	/*height          :80px !important;*/
 	display         :flex !important;
 	justify-content :space-between !important;
 }
@@ -104,6 +104,12 @@ Black 			- 900
 
 	img.write-review-btn{
 		max-width :200px !important;
+	}
+}
+
+@media only screen and (max-device-width: 375px) {
+	img.write-review-btn {
+		max-width: 140px !important;
 	}
 }
 
