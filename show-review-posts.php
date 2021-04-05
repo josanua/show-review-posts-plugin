@@ -9,7 +9,7 @@
  * Plugin Name:       Hapigood reviews plugin
  * Plugin URI:        simpals.com
  * Description:       This is a custom Hapigood plugin for reviews showing
- * Version:           1.2.1
+ * Version:           1.2.2
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -282,7 +282,9 @@ function srp_generate_review_posts( $atts ) {
 	  if ( $custom_query->have_posts() ) :
 
 		  while ( $custom_query->have_posts() ) : $custom_query->the_post();
-			  $post_id = get_the_ID(); ?>
+			  $post_id = get_the_ID();
+		  	$text_content = get_the_content();
+			  ?>
 
 						<article class="review-posts-article">
 
@@ -349,18 +351,20 @@ function srp_generate_review_posts( $atts ) {
 				  ?>
 							</header><!-- .review-posts-entry-header -->
 
+							<?php if ( !empty( $text_content ) ) : ?>
 							<div class="review-posts-entry-content">
 								<p>
-					<?php echo wp_trim_words( get_the_excerpt(), NUMBER_OF_WORDS, __( ' ...' ) ); ?>
+								<?php echo wp_trim_words( get_the_excerpt(), NUMBER_OF_WORDS, __( ' ...' ) ); ?>
 								</p>
 							</div><!-- .review-posts-entry-content -->
+							<?php endif; ?>
 
 							<div class="review-posts-full-content">
 				  		<?php the_content(); ?>
 
 							</div><!-- .eview-posts-full-content -->
 
-							<?php $srp_words_num = srp_words_num(get_the_content()); ?>
+							<?php $srp_words_num = srp_words_num($text_content); ?>
 							<footer class="review-posts-entry-footer <?php if ($srp_words_num <= NUMBER_OF_WORDS) echo ' hide' ; ?>">
 
 								<span class="link-full-review">
