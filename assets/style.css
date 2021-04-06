@@ -58,8 +58,8 @@ Black 			- 900
 
 /* Main layout */
 .show-review-posts-row{
-	max-width      :800px;
-	margin         :0 auto !important;
+	/*max-width      :800px;*/
+	/*margin         :0 auto !important;*/
 	background: #fff !important;
 	padding: 1rem !important;
 }
@@ -70,10 +70,17 @@ Black 			- 900
 	}
 }
 
+/* main logos */
 .show-review-posts-row .logos-img{
 	/*height          :80px !important;*/
 	display         :flex !important;
 	justify-content :space-between !important;
+}
+
+/* logo variations */
+img.hapigood-logo.without-text{
+	width: 50%;
+	margin-bottom: 16px;
 }
 
 .write-review-btn-link{

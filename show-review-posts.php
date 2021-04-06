@@ -9,7 +9,7 @@
  * Plugin Name:       Hapigood reviews plugin
  * Plugin URI:        simpals.com
  * Description:       This is a custom Hapigood plugin for reviews showing
- * Version:           1.2.3
+ * Version:           1.2.4
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -247,10 +247,25 @@ function srp_generate_review_posts( $atts ) {
 	$custom_query = new WP_Query( $args );
 	ob_start();
 
-	// take plugin options
+	// get plugin options
+//	$hapigood_main_logo = 'hapigood-logo.png';
+	$hapigood_main_logo = 'hapigood-logo-without-text.jpg';
 	$options_main_link         = get_option( 'srp_options' );
 	$options_review_link       = get_option( 'srp_review_link_option' );
 	$options_more_reviews_link = get_option( 'srp_more_reviews_link_option' );
+
+	// define main logo css style
+	switch ($hapigood_main_logo) {
+		case 'hapigood-logo.png':
+			$hapigood_main_logo_class = '';
+			break;
+		case 'hapigood-logo-without-text.jpg':
+			$hapigood_main_logo_class = 'without-text';
+			break;
+//		case 'hapigood-logo-without-text.jpg':
+//			$hapigood_main_logo_class = '';
+//			break;
+	}
 
 
 	// calc number of words in content pos
@@ -266,7 +281,7 @@ function srp_generate_review_posts( $atts ) {
 
 		<div class="logos-img">
 			<a href="<?php echo $options_main_link['srp_main_logo_link_field']; ?>" target="_blank">
-				<img src="<?php echo plugins_url( 'assets/images/hapigood-logo.png', __FILE__ ) ?>" class="hapigood-logo"
+				<img src="<?php echo plugins_url( "assets/images/{$hapigood_main_logo}", __FILE__ ) ?>" class="hapigood-logo <?php echo $hapigood_main_logo_class ?>"
 						 alt="hapigood logo">
 			</a>
 
@@ -351,13 +366,11 @@ function srp_generate_review_posts( $atts ) {
 				  ?>
 							</header><!-- .review-posts-entry-header -->
 
-							<?php if ( !empty( $text_content ) ) : ?>
-							<div class="review-posts-entry-content">
+							<div class="review-posts-entry-content <?php if ( empty( $text_content ) ) echo 'hide' ;  ?>">
 								<p>
 								<?php echo wp_trim_words( get_the_excerpt(), NUMBER_OF_WORDS, __( ' ...' ) ); ?>
 								</p>
 							</div><!-- .review-posts-entry-content -->
-							<?php endif; ?>
 
 							<div class="review-posts-full-content">
 				  		<?php the_content(); ?>
@@ -365,13 +378,13 @@ function srp_generate_review_posts( $atts ) {
 							</div><!-- .eview-posts-full-content -->
 
 							<?php $srp_words_num = srp_words_num($text_content); ?>
-							<footer class="review-posts-entry-footer <?php if ($srp_words_num <= NUMBER_OF_WORDS) echo ' hide' ; ?>">
+							<footer class="review-posts-entry-footer <?php if ($srp_words_num <= NUMBER_OF_WORDS) echo 'hide' ; ?>">
 
 								<span class="link-full-review">
-									<?php _e( 'Full review', 'show_review_posts' ); ?>
+									<?php _e( 'Read more', 'show_review_posts' ); ?>
 								</span>
 								<span class="close-link-full-review">
-									<?php _e( 'Close full review', 'show_review_posts' ); ?>
+									<?php _e( 'Close', 'show_review_posts' ); ?>
 								</span>
 								<!--								<a href="--><?php //the_permalink() ?><!--" class="link-full-review" >-->
 								<!--					--><?php //_e( 'Full review', 'show_review_posts' ); ?>
@@ -395,7 +408,7 @@ function srp_generate_review_posts( $atts ) {
 
 		  ?>
 				<a href="<?php echo $options_more_reviews_link['srp_more_reviews_link_field'] ?>" class="more-button">
-			<?php _e( 'More reviews', 'show_review_posts' ); ?>
+					<?php _e( 'More', 'show_review_posts' ); ?>
 				</a>
 	  <?php endif; ?>
 	</div>
