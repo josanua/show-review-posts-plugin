@@ -129,8 +129,9 @@ img.hapigood-logo.without-text{
 	border        :1px solid #F5F5F5 !important;
 	box-sizing    :border-box !important;
 	background    :#FFFFFF !important;
-	margin-bottom :17px !important;
+	/*margin-bottom :17px !important;*/
 	text-align: left !important;
+	margin: 0 0 17px 0 !important;
 }
 
 .review-posts-entry-header{
