@@ -75,6 +75,7 @@ function srp_admin_settings_init() {
 	register_setting( 'srp_admin_options', 'srp_options' );
 	register_setting( 'srp_admin_options', 'srp_review_link_option' );
 	register_setting( 'srp_admin_options', 'srp_more_reviews_link_option' );
+	register_setting( 'srp_admin_options', 'srp_posts_num_home_page_option' );
 	register_setting( 'srp_admin_options', 'srp_select_main_logo_img' );
 
 	// Register a new section in the "srp-settings" page.
@@ -122,6 +123,19 @@ function srp_admin_settings_init() {
 			'label_for'       => 'srp_more_reviews_link_field',
 			'class'           => 'srp_more_reviews_field_row',
 			'srp_custom_data' => 'custom_more_reviews_link_field_row'
+		)
+	);
+
+	add_settings_field(
+		'srp_posts_num_home_page_option',
+		'Reviews numbers on Home page',
+		'srp_select_posts_num_home_html',
+		'srp-settings',
+		'srp_admin_section',
+		array(
+			'label_for'       => 'srp_posts_num_home_page_option',
+			'class'           => 'srp_posts_num_home_page_option',
+			'srp_custom_data' => 'custom_posts_num_home_page_row'
 		)
 	);
 
@@ -186,6 +200,29 @@ function showValuePlaceholder( $showValue = '' ) {
 	return $returnValue;
 }
 
+
+// function for check values existance
+function showRequiredAttribute($value = '') {
+
+	// detect existing value
+	$hapigood_main_logo = get_option( 'srp_select_main_logo_img' );
+
+	if($hapigood_main_logo == '') {
+		$hapigood_main_logo = MAIN_LOGO_NAME;
+	} else {
+		$hapigood_main_logo = $hapigood_main_logo['srp_select_main_logo_img'];
+	}
+
+	// check input value
+	if ($hapigood_main_logo == $value) {
+	  $state = 'checked';
+	}	else {
+	  $state = '';
+	}
+
+	return $state;
+}
+
 /**
  * add_settings_field - callback function
  *
@@ -199,7 +236,6 @@ function showValuePlaceholder( $showValue = '' ) {
 function srp_logo_link_field_html( $args ) {
 	// Get the value of the setting we've registered with register_setting()
 	$options = get_option( 'srp_options' );
-//	var_dump($options);
 	?>
 
 	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
@@ -250,33 +286,61 @@ function srp_more_reviews_link_field_html( $args ) {
 	<?php
 }
 
+// Write More Reviews Logo Link
+function srp_select_posts_num_home_html( $args ) {
+	// Get the value of the setting we've registered with register_setting()
+	$options = get_option( 'srp_posts_num_home_page_option' );
+	?>
+
+	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
+	<input type="number" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				 name="srp_posts_num_home_page_option[<?php echo esc_attr( $args['label_for'] ); ?>]"
+				 value="<?php echo showValuePlaceholder( $options['srp_posts_num_home_page_option'] ); ?>">
+
+	<p class="description">
+	  <?php esc_html_e( 'Enter the desired number of reviews to display on the Home page.', 'show_review_posts' ); ?><br/>
+	</p>
+
+	<?php
+}
+
 // Main logo select html
-function srp_select_main_logo_img_html( $args ) { ?>
+function srp_select_main_logo_img_html( $args ) {
+
+//	$options = get_option( 'srp_select_main_logo_img' );
+
+	?>
 
 	<div class="select-main-logos">
 		<div class="logo-item">
-			<img src="<?php echo plugins_url( "assets/images/hapigood-logo.png", __FILE__ ) ?>" class="hapigood-logo one"
+			<img src="<?php echo plugins_url( "assets/images/" . MAIN_LOGO_NAME, __FILE__ ) ?>" class="hapigood-logo one"
 					 alt="hapigood logo">
 			<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
 			<input type="radio" id="<?php echo esc_attr( $args['label_for'] ); ?>"
 						 name="srp_select_main_logo_img[<?php echo esc_attr( $args['label_for'] ); ?>]"
-						 value="hapigood-logo.png">
+						 value="<?php echo MAIN_LOGO_NAME ?>" <?php echo showRequiredAttribute(MAIN_LOGO_NAME ); ?>>
 		</div>
 
 		<div class="logo-item">
-			<img src="<?php echo plugins_url( "assets/images/hapigood-logo-without-text.jpg", __FILE__ ) ?>"
+			<img src="<?php echo plugins_url( "assets/images/" . MAIN_LOGO_NAME_WITHOUT_TEXT, __FILE__ ) ?>"
 					 class="hapigood-logo two"
 					 alt="hapigood logo">
 			<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
 			<input type="radio" id="<?php echo esc_attr( $args['label_for'] ); ?>"
 						 name="srp_select_main_logo_img[<?php echo esc_attr( $args['label_for'] ); ?>]"
-						 value="hapigood-logo-without-text.jpg" <?php //if () echo 'checked'; ?>>
+						 value="<?php echo MAIN_LOGO_NAME_WITHOUT_TEXT ?>" <?php echo showRequiredAttribute(MAIN_LOGO_NAME_WITHOUT_TEXT ); ?>>
 		</div>
 
 <!--		<div class="logo-item">-->
 <!--			<img src="--><?php //echo plugins_url( "assets/images/hapigood-logo.png", __FILE__ ) ?><!--" class="hapigood-logo three"-->
 <!--					 alt="hapigood logo">-->
 <!--		</div>-->
+
+	  <?php
+
+//	  var_dump($options);
+
+	  ?>
 	</div>
 
 
