@@ -16,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-
 /**
  * Enqueue admin scripts.
  */
@@ -28,8 +27,8 @@ function sr_plugin_enqueue_admin_styles() {
 	// Include JS
 	// wp_enqueue_script( 'custom-js-script', get_stylesheet_directory_uri() . '/custom-js.js', array(), '1.0.0', true); // Print in footer
 }
-add_action( 'admin_enqueue_scripts', 'sr_plugin_enqueue_admin_styles' );
 
+add_action( 'admin_enqueue_scripts', 'sr_plugin_enqueue_admin_styles' );
 
 
 /**
@@ -40,29 +39,31 @@ add_action( 'admin_enqueue_scripts', 'sr_plugin_enqueue_admin_styles' );
 /**
  * Shortcode presentation
  */
-function srp_admin_html(){
-	$pageTitle = __('Shortcode settings', 'show_review_posts');
+function srp_admin_html() {
+	$pageTitle = __( 'Shortcode settings', 'show_review_posts' );
 	?>
 	<div class="shortcode-info">
 		<h1><?php echo $pageTitle ?></h1>
 
 		<div class="documentation-text">
-			<b>Shortcode default text:</b>  [show_review_posts]<br/>
-			<b>Shortcode with options (with default values):</b>[show_review_posts  show_on_home="" posts_per_page=""  category_id=""]<br/>
+			<b>Shortcode default text:</b> [show_review_posts]<br/>
+			<b>Shortcode with options (with default values):</b>[show_review_posts show_on_home="" posts_per_page=""
+			category_id=""]<br/>
 			<ul>
 				Options list:
-				<li><b>show_on_home - </b>it's destinated for 'Home Page', mean with "More Reviews button", 0 - no (it's default), 1 - for Home page.</li>
+				<li><b>show_on_home - </b>it's destinated for 'Home Page', mean with "More Reviews button", 0 - no (it's
+					default), 1 - for Home page.
+				</li>
 				<li><b>posts_per_page - </b>default 5 posts.</li>
 				<li><b>category_id - </b>parent category ID, default is "" mean all.</li>
-<!--				<li><b>more_reviews_link - </b>change review link page.</li>-->
-<!--				<li><b>post_type - </b>future option, for now it's disabled.</li>-->
+				<!--				<li><b>more_reviews_link - </b>change review link page.</li>-->
+				<!--				<li><b>post_type - </b>future option, for now it's disabled.</li>-->
 			</ul>
 		</div>
 	</div>
 
 	<?php
 }
-
 
 
 /**
@@ -74,11 +75,12 @@ function srp_admin_settings_init() {
 	register_setting( 'srp_admin_options', 'srp_options' );
 	register_setting( 'srp_admin_options', 'srp_review_link_option' );
 	register_setting( 'srp_admin_options', 'srp_more_reviews_link_option' );
+	register_setting( 'srp_admin_options', 'srp_select_main_logo_img' );
 
 	// Register a new section in the "srp-settings" page.
 	add_settings_section(
 		'srp_admin_section',
-		'Show review posts Options',
+		'Hapigood Review Post Options',
 		'srp_admin_section_html',
 		'srp-settings'
 	);
@@ -91,9 +93,9 @@ function srp_admin_settings_init() {
 		'srp-settings',
 		'srp_admin_section',
 		array(
-			'label_for'         => 'srp_main_logo_link_field',
-			'class'             => 'srp_main_logo_link_row',
-			'srp_custom_data' 	=> 'custom'
+			'label_for'       => 'srp_main_logo_link_field',
+			'class'           => 'srp_main_logo_link_row',
+			'srp_custom_data' => 'custom'
 		)
 	);
 
@@ -104,9 +106,9 @@ function srp_admin_settings_init() {
 		'srp-settings',
 		'srp_admin_section',
 		array(
-			'label_for'         => 'srp_review_logo_link_field',
-			'class'             => 'srp_review_link_field_row',
-			'srp_custom_data' 	=> 'custom_review_link_field_row'
+			'label_for'       => 'srp_review_logo_link_field',
+			'class'           => 'srp_review_link_field_row',
+			'srp_custom_data' => 'custom_review_link_field_row'
 		)
 	);
 
@@ -117,26 +119,40 @@ function srp_admin_settings_init() {
 		'srp-settings',
 		'srp_admin_section',
 		array(
-			'label_for'         => 'srp_more_reviews_link_field',
-			'class'             => 'srp_more_reviews_field_row',
-			'srp_custom_data' 	=> 'custom_more_reviews_link_field_row'
+			'label_for'       => 'srp_more_reviews_link_field',
+			'class'           => 'srp_more_reviews_field_row',
+			'srp_custom_data' => 'custom_more_reviews_link_field_row'
+		)
+	);
+
+	add_settings_field(
+		'srp_select_main_logo_img',
+		'Select main logo img',
+		'srp_select_main_logo_img_html',
+		'srp-settings',
+		'srp_admin_section',
+		array(
+			'label_for'       => 'srp_select_main_logo_img',
+			'class'           => 'srp_select_main_logo_img',
+			'srp_custom_data' => 'custom_select_main_logo_img_row'
 		)
 	);
 }
-add_action( 'admin_init', 'srp_admin_settings_init' );
 
+add_action( 'admin_init', 'srp_admin_settings_init' );
 
 
 // Add the top level menu page.
 function srp_options_page() {
 	add_menu_page(
-		'Show review posts',
-		'SRP Options',
+		'Hapigood review posts',
+		'Hapigood Reviews Options',
 		'manage_options',
 		'srp-settings',
 		'srp_options_page_html'
 	);
 }
+
 add_action( 'admin_menu', 'srp_options_page' );
 
 
@@ -148,23 +164,23 @@ add_action( 'admin_menu', 'srp_options_page' );
 /**
  * SRP admin section callback function.
  *
- * @param array $args  The settings array, defining title, id, callback.
+ * @param array $args The settings array, defining title, id, callback.
  */
 function srp_admin_section_html( $args ) {
 	?>
 	<p id="<?php echo esc_attr( $args['id'] ); ?>">
-			<?php esc_html_e( 'Setup your settings.', 'show_review_posts' ); ?>
+	  <?php esc_html_e( 'Setup your settings.', 'show_review_posts' ); ?>
 	</p>
 	<?php
 }
 
 // show placeholder value helper
-function showValuePlaceholder($showValue = ''){
+function showValuePlaceholder( $showValue = '' ) {
 
-	if($showValue != ''){
+	if ( $showValue != '' ) {
 		$returnValue = $showValue;
 	} else {
-	  $returnValue = 'https://';
+		$returnValue = 'https://';
 	}
 
 	return $returnValue;
@@ -187,8 +203,9 @@ function srp_logo_link_field_html( $args ) {
 	?>
 
 	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
-	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="srp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
-				 value="<?php echo showValuePlaceholder($options['srp_main_logo_link_field']); ?>" >
+	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				 name="srp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
+				 value="<?php echo showValuePlaceholder( $options['srp_main_logo_link_field'] ); ?>">
 
 	<p class="description">
 	  <?php esc_html_e( 'Enter the link of the main logo.', 'show_review_posts' ); ?><br/>
@@ -204,8 +221,9 @@ function srp_review_link_field_html( $args ) {
 	?>
 
 	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
-	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="srp_review_link_option[<?php echo esc_attr( $args['label_for'] ); ?>]"
-				 value="<?php 	echo showValuePlaceholder($options['srp_review_logo_link_field']); ?>">
+	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				 name="srp_review_link_option[<?php echo esc_attr( $args['label_for'] ); ?>]"
+				 value="<?php echo showValuePlaceholder( $options['srp_review_logo_link_field'] ); ?>">
 
 	<p class="description">
 	  <?php esc_html_e( 'Enter the link of the review page.', 'show_review_posts' ); ?><br/>
@@ -221,8 +239,9 @@ function srp_more_reviews_link_field_html( $args ) {
 	?>
 
 	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
-	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="srp_more_reviews_link_option[<?php echo esc_attr( $args['label_for'] ); ?>]"
-				 value="<?php 	echo showValuePlaceholder($options['srp_more_reviews_link_field']); ?>">
+	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				 name="srp_more_reviews_link_option[<?php echo esc_attr( $args['label_for'] ); ?>]"
+				 value="<?php echo showValuePlaceholder( $options['srp_more_reviews_link_field'] ); ?>">
 
 	<p class="description">
 	  <?php esc_html_e( 'Enter the link of the more reviews page.', 'show_review_posts' ); ?><br/>
@@ -231,6 +250,37 @@ function srp_more_reviews_link_field_html( $args ) {
 	<?php
 }
 
+// Main logo select html
+function srp_select_main_logo_img_html( $args ) { ?>
+
+	<div class="select-main-logos">
+		<div class="logo-item">
+			<img src="<?php echo plugins_url( "assets/images/hapigood-logo.png", __FILE__ ) ?>" class="hapigood-logo one"
+					 alt="hapigood logo">
+			<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
+			<input type="radio" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+						 name="srp_select_main_logo_img[<?php echo esc_attr( $args['label_for'] ); ?>]"
+						 value="hapigood-logo.png">
+		</div>
+
+		<div class="logo-item">
+			<img src="<?php echo plugins_url( "assets/images/hapigood-logo-without-text.jpg", __FILE__ ) ?>"
+					 class="hapigood-logo two"
+					 alt="hapigood logo">
+			<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
+			<input type="radio" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+						 name="srp_select_main_logo_img[<?php echo esc_attr( $args['label_for'] ); ?>]"
+						 value="hapigood-logo-without-text.jpg" <?php //if () echo 'checked'; ?>>
+		</div>
+
+<!--		<div class="logo-item">-->
+<!--			<img src="--><?php //echo plugins_url( "assets/images/hapigood-logo.png", __FILE__ ) ?><!--" class="hapigood-logo three"-->
+<!--					 alt="hapigood logo">-->
+<!--		</div>-->
+	</div>
+
+
+<?php }
 
 
 /**
@@ -259,18 +309,18 @@ function srp_options_page_html() {
 	// show error/update messages
 	settings_errors( 'srp_messages' );
 	?>
-	<div class="wrap">
 
+	<div class="wrap">
 		<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 		<form action="options.php" method="post">
 		<?php
-		// output security fields for the registered setting "wporg"
-		settings_fields( 'srp_admin_options' );
-		// output setting sections and their fields
-		// (sections are registered for "wporg", each field is registered to a specific section)
-		do_settings_sections( 'srp-settings' );
-		// output save settings button
-		submit_button( 'Save Settings' );
+			// output security fields for the registered setting "wporg"
+			settings_fields( 'srp_admin_options' );
+			// output setting sections and their fields
+			// (sections are registered for "wporg", each field is registered to a specific section)
+			do_settings_sections( 'srp-settings' );
+			// output save settings button
+			submit_button( 'Save Settings' );
 		?>
 		</form>
 	  <?php srp_admin_html(); ?>

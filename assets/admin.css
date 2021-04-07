@@ -1,1 +1,16 @@
 /* Admin dashboard style sheet */
+.select-main-logos {
+	display: flex;
+}
+.select-main-logos .logo-item{
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	width: 200px;
+}
+img.hapigood-logo {
+	margin: 0 10px 10px 0;
+}
+img.hapigood-logo.two{
+	width: 90px;
+}

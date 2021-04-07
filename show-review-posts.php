@@ -92,6 +92,19 @@ add_action( 'wp_enqueue_scripts', 'srp_plugin_enqueue_styles' );
 
 
 /**
+ * Admin Enqueue scripts.
+ */
+function srp_plugin_admin_enqueue_styles() {
+
+	// include CSS files
+	wp_enqueue_style( 'show-reviews-plugin', plugins_url( 'assets/admin.css', __FILE__ ) );
+}
+
+add_action( 'admin_enqueue_scripts', 'srp_plugin_admin_enqueue_styles' );
+
+
+
+/**
  * Create post type 'srp_review_posts'
  */
 if ( ! function_exists( 'srp_create_custom_post_type' ) ) {
@@ -248,11 +261,12 @@ function srp_generate_review_posts( $atts ) {
 	ob_start();
 
 	// get plugin options
-//	$hapigood_main_logo = 'hapigood-logo.png';
-	$hapigood_main_logo = 'hapigood-logo-without-text.jpg';
 	$options_main_link         = get_option( 'srp_options' );
+	$hapigood_main_logo 			 = get_option( 'srp_select_main_logo_img' );
+	$hapigood_main_logo  			 = $hapigood_main_logo['srp_select_main_logo_img'];
 	$options_review_link       = get_option( 'srp_review_link_option' );
 	$options_more_reviews_link = get_option( 'srp_more_reviews_link_option' );
+
 
 	// define main logo css style
 	switch ($hapigood_main_logo) {
