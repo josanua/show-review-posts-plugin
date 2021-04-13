@@ -176,7 +176,7 @@ function srp_generate_review_posts( $atts ) {
 
 					<div class="review-posts-entry-content <?php if ( empty( $text_content ) ) echo 'hide' ;  ?>">
 						<p>
-							<?php echo wp_trim_words( get_the_excerpt(), NUMBER_OF_WORDS, __( ' ...' ) ); ?>
+							<?php echo wp_trim_words( get_the_content(), NUMBER_OF_WORDS, __( ' ...' ) ); ?>
 						</p>
 					</div><!-- .review-posts-entry-content -->
 
@@ -220,6 +220,7 @@ function srp_generate_review_posts( $atts ) {
 			</a>
 		<?php endif; ?>
 	</div>
+	<!-- . show-review-posts-row -->
 
 	<?php
 

@@ -41,6 +41,7 @@ add_action( 'admin_enqueue_scripts', 'sr_plugin_enqueue_admin_styles' );
  */
 function srp_admin_html() {
 	$pageTitle = __( 'Shortcode settings', 'show_review_posts' );
+	$reviewsRSSLink =  get_bloginfo('url') . '/feed/?post_type=srp_review_posts';
 	?>
 	<div class="shortcode-info">
 		<h1><?php echo $pageTitle ?></h1>
@@ -59,6 +60,13 @@ function srp_admin_html() {
 				<!--				<li><b>more_reviews_link - </b>change review link page.</li>-->
 				<!--				<li><b>post_type - </b>future option, for now it's disabled.</li>-->
 			</ul>
+
+			<h2>Reviews link</h2>
+			<p>
+				<a href="<?php echo $reviewsRSSLink ?>" target="_blank">
+					<?php echo $reviewsRSSLink; ?>
+				</a>
+			</p>
 		</div>
 	</div>
 
