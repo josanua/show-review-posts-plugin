@@ -76,11 +76,13 @@ function srp_generate_review_posts( $atts ) {
 
 
 	// calc number of words in content pos
-	function srp_words_num($text = '') {
-		$text = wp_strip_all_tags( $text );
+	if (!function_exists('srp_words_num')) {
+	  function srp_words_num( $text = '' ) {
+		  $text = wp_strip_all_tags( $text );
 
-		return str_word_count($text, 0);
-	}
+		  return str_word_count( $text, 0 );
+	  }
+  }
 
 	ob_start();
 	?>

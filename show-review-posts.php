@@ -9,7 +9,7 @@
  * Plugin Name:       Hapigood reviews plugin
  * Plugin URI:        simpals.com
  * Description:       This is a custom Hapigood plugin for reviews showing
- * Version:           1.4.2
+ * Version:           1.4.3
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
