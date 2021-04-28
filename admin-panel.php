@@ -86,6 +86,10 @@ function srp_admin_settings_init() {
 	register_setting( 'srp_admin_options', 'srp_posts_num_home_page_option' );
 	register_setting( 'srp_admin_options', 'srp_select_main_logo_img' );
 
+	// for synchronization settings
+	register_setting( 'srp_admin_options', 'srp_sync_site_address' );
+
+
 	// Register a new section in the "srp-settings" page.
 	add_settings_section(
 		'srp_admin_section',
@@ -157,6 +161,19 @@ function srp_admin_settings_init() {
 			'label_for'       => 'srp_select_main_logo_img',
 			'class'           => 'srp_select_main_logo_img',
 			'srp_custom_data' => 'custom_select_main_logo_img_row'
+		)
+	);
+
+	add_settings_field(
+		'srp_sync_site_address',
+		'Synchronization Site URL',
+		'srp_sync_site_address_html',
+		'srp-settings',
+		'srp_admin_section',
+		array(
+			'label_for'       => 'srp_sync_site_address',
+			'class'           => 'srp_sync_site_address',
+			'srp_custom_data' => 'custom_srp_sync_site_address_row'
 		)
 	);
 }
@@ -346,13 +363,30 @@ function srp_select_main_logo_img_html( $args ) {
 
 	  <?php
 
-//	  var_dump($options);
+	//	  var_dump($options);
 
 	  ?>
 	</div>
-
-
 <?php }
+
+
+// Write More Reviews Logo Link
+function srp_sync_site_address_html( $args ) {
+	// Get the value of the setting we've registered with register_setting()
+	$options = get_option( 'srp_sync_site_address' );
+	?>
+
+	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
+	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				 name="srp_sync_site_address[<?php echo esc_attr( $args['label_for'] ); ?>]"
+				 value="<?php echo showValuePlaceholder( $options['srp_sync_site_address'] ); ?>">
+
+	<p class="description">
+	  <?php esc_html_e( 'Pls enter site url of Hapigood Reviews.', 'show_review_posts' ); ?><br/>
+	</p>
+
+	<?php
+}
 
 
 /**

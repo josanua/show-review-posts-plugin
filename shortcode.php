@@ -119,13 +119,11 @@ function srp_generate_review_posts( $atts ) {
 									<b>by</b>
 									<?php
 
-									// get author name
+									// get/show author name
 									if ( ! empty( $post_id ) ) {
 
-										// Get the custom post class.
 										$review_author_name = get_post_meta( $post_id, 'srp_author_name_meta', true );
 
-										// If a post class was input, sanitize it and add it to the post class array.
 										if ( ! empty( $review_author_name ) ) {
 											echo $review_author_name;
 										} else {
@@ -154,7 +152,7 @@ function srp_generate_review_posts( $atts ) {
 						?>
 
 						<span class="review-posts-date">
-									<?php the_time( 'd / m / y' ); ?>
+									<?php the_time( 'm / d / y' ); ?>
 								</span>
 
 

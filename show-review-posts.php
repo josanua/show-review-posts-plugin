@@ -9,7 +9,7 @@
  * Plugin Name:       Hapigood reviews plugin
  * Plugin URI:        simpals.com
  * Description:       This is a custom Hapigood plugin for reviews showing
- * Version:           1.4.3
+ * Version:           2.0.0
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -88,11 +88,9 @@ function srp_flush_rewrite_rules() {
  */
 function srp_plugin_enqueue_styles() {
 
-	// include CSS files
 	wp_enqueue_style( 'show-reviews-plugin', plugins_url( 'assets/style.css', __FILE__ ) );
-
-	// Include JS
-	wp_enqueue_script( 'show-reviews-plugin-js', plugins_url( 'assets/script.js', __FILE__ ), array(), '1.0.0', true ); // Print in footer
+	wp_enqueue_script( 'show-reviews-plugin-js', plugins_url( 'assets/script.js', __FILE__ ), array(),
+			'1.0.0', true ); // Print in footer
 }
 
 add_action( 'wp_enqueue_scripts', 'srp_plugin_enqueue_styles' );
@@ -250,7 +248,7 @@ function srp_add_post_meta_boxes() {
 	add_meta_box(
 		'srp-review-author-name',                                          // Unique ID
 		esc_html__( 'Review author', 'show_review_posts' ),       // Title
-		'srp_reviews_meta_box_html',                            // Callback function
+		'srp_reviews_meta_box_html',                            			// Callback function
 		'srp_review_posts',                                            // Admin page (or post type)
 		'side',                                                        // Context
 		'default'                                                      // Priority
@@ -259,7 +257,7 @@ function srp_add_post_meta_boxes() {
 
 // Display the author post meta box.
 //TODO: de imbunatatit forma, eliminare p-uri, eroare consola,
-//TODO: nonce de vazut ce-i
+//TODO: nonce de vazut ce-i cu el, pentru ce trebuie
 function srp_reviews_meta_box_html( $post ) {
 
 	$srp_author_name_meta        = esc_attr( get_post_meta( $post->ID, 'srp_author_name_meta', true ) );
