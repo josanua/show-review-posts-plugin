@@ -39,4 +39,5 @@ document.addEventListener('DOMContentLoaded', function (event) {
     review_posts_full_content_items[n].classList.toggle('show')
     review_posts_entry_content_items[n].classList.toggle('hide')
   }
+
 })

@@ -88,6 +88,7 @@ function srp_admin_settings_init() {
 
 	// for synchronization settings
 	register_setting( 'srp_admin_options', 'srp_sync_site_address' );
+	register_setting( 'srp_admin_options', 'srp_sync_security_code' );
 
 
 	// Register a new section in the "srp-settings" page.
@@ -175,6 +176,19 @@ function srp_admin_settings_init() {
 			'class'           => 'srp_sync_site_address',
 			'srp_custom_data' => 'custom_srp_sync_site_address_row'
 		)
+	);
+
+	add_settings_field(
+			'srp_sync_security_code',
+			'Synchronization security code',
+			'srp_sync_security_code_html',
+			'srp-settings',
+			'srp_admin_section',
+			array(
+					'label_for'       => 'srp_sync_security_code',
+					'class'           => 'srp_sync_security_code',
+					'srp_custom_data' => 'custom_srp_sync_security_code_row'
+			)
 	);
 }
 
@@ -311,7 +325,7 @@ function srp_more_reviews_link_field_html( $args ) {
 	<?php
 }
 
-// Write More Reviews Logo Link
+// Select show posts numbers html
 function srp_select_posts_num_home_html( $args ) {
 	// Get the value of the setting we've registered with register_setting()
 	$options = get_option( 'srp_posts_num_home_page_option' );
@@ -370,7 +384,7 @@ function srp_select_main_logo_img_html( $args ) {
 <?php }
 
 
-// Write More Reviews Logo Link
+// Sync site address html
 function srp_sync_site_address_html( $args ) {
 	// Get the value of the setting we've registered with register_setting()
 	$options = get_option( 'srp_sync_site_address' );
@@ -387,6 +401,27 @@ function srp_sync_site_address_html( $args ) {
 
 	<?php
 }
+
+// Sync site security code html
+function srp_sync_security_code_html( $args ) {
+	// Get the value of the setting we've registered with register_setting()
+	$options = get_option( 'srp_sync_security_code' );
+	?>
+
+	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
+	<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				 name="srp_sync_security_code[<?php echo esc_attr( $args['label_for'] ); ?>]"
+				 value="<?php echo $options['srp_sync_security_code'] ; ?>">
+
+	<div id="btn-generate-security-code" class="button button-primary">Generate code</div>
+
+	<p class="description">
+		<?php esc_html_e( 'Pls. generate and save synchronization security code.', 'show_review_posts' ); ?><br/>
+	</p>
+
+	<?php
+}
+
 
 
 /**
