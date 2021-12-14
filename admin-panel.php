@@ -90,6 +90,9 @@ function srp_admin_settings_init() {
 	register_setting( 'srp_admin_options', 'srp_sync_site_address' );
 	register_setting( 'srp_admin_options', 'srp_sync_security_code' );
 
+	// Og image generator
+	register_setting( 'srp_admin_options', 'srp_og_dynamic' );
+
 
 	// Register a new section in the "srp-settings" page.
 	add_settings_section(
@@ -188,6 +191,19 @@ function srp_admin_settings_init() {
 					'label_for'       => 'srp_sync_security_code',
 					'class'           => 'srp_sync_security_code',
 					'srp_custom_data' => 'custom_srp_sync_security_code_row'
+			)
+	);
+
+	add_settings_field(
+			'srp_og_dynamic',
+			'Enable dynamic og image ?',
+			'srp_og_dynamic_html',
+			'srp-settings',
+			'srp_admin_section',
+			array(
+					'label_for'       => 'srp_og_dynamic',
+					'class'           => 'srp_og_dynamic',
+					'srp_custom_data' => 'custom_srp_og_dynamic_row'
 			)
 	);
 }
@@ -422,7 +438,17 @@ function srp_sync_security_code_html( $args ) {
 	<?php
 }
 
+// Main logo select html
+function srp_og_dynamic_html( $args ) {
+	// Get the value of the setting we've registered with register_setting()
+	$options = get_option( 'srp_og_dynamic' );
+	?>
 
+	<label for="<?php echo esc_attr( $args['label_for'] ); ?>"></label>
+	<input type="checkbox" id="srp_og_dynamic" name="srp_og_dynamic[<?php echo esc_attr( $args['label_for'] ); ?>]" value="1" <?php if ( is_array($options) && 1 == $options['srp_og_dynamic'] ) echo 'checked="checked"'; ?> />
+
+	<?php
+}
 
 /**
  * Top level menu callback function
