@@ -469,7 +469,7 @@ add_action( 'admin_post_nopriv_srp', 'srp_post_handler' );
  */
 require dirname( __FILE__ ) . '/plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	'https://github.com/ChesterX/test-wp-plugin',
+	'https://github.com/josanua/test-wp-plugin',
 	__FILE__,
 	'show_review_posts'
 );
