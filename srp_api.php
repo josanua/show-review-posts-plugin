@@ -5,21 +5,20 @@
  * I did it with direct addressing to the file
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	require_once( "../../../wp-load.php" );
-
+function srp_post_handler() {
 	if ( isset( $_POST['form_data_json'] ) && ! empty( $_POST['form_data_json'] ) ) {
 
 		$formDataJSON = $_POST['form_data_json'];
 		$formDataJSON = json_decode( stripslashes( $formDataJSON ) );
+		$formDataLocation = intval( wp_strip_all_tags( $formDataJSON->post_category ) );
 
 		// 'main_site_address' => 'https://localhost/hapigood-prod/',
-
+		// 
 		// construct array for creating post func
 		$formDataArr = array(
-			'post_content' => wp_strip_all_tags( $formDataJSON->post_content ),
+			'post_content' => $formDataJSON->post_content,
 			'post_title'   => wp_strip_all_tags( $formDataJSON->post_title ),
-			'post_date'    => wp_strip_all_tags( $formDataJSON->post_date ),
+			//'post_date'    => wp_strip_all_tags( $formDataJSON->post_date ),
 			'post_type'    => 'srp_review_posts',
 			'post_status'  => 'publish',
 			'meta_input'   => array(
@@ -27,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				'srp_author_description_meta' => wp_strip_all_tags( $formDataJSON->profession_title ),
 				'srp_review_link_meta' => wp_strip_all_tags( $formDataJSON->review_link ),
 				'srp_review_link_text_meta' => wp_strip_all_tags( $formDataJSON->review_link_text ),
+				//'srp_category_meta' =>  wp_strip_all_tags( $formDataJSON->post_category ),
 			),
 			'sender_site_address' => wp_strip_all_tags( $formDataJSON->sender_site_address ),
 			'sync_security_code' => wp_strip_all_tags( $formDataJSON->sync_security_code ),
@@ -75,11 +75,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			// check insert post state and return JSON
 			if ( isset( $resultPostInsert ) && is_int( $resultPostInsert ) && $resultPostInsert != 0 ) {
-
+				
+				if ( isset( $formDataLocation ) && is_int( $formDataLocation ) ) {
+					wp_set_object_terms( $resultPostInsert, $formDataLocation, 'srp_review_tax_cat' );
+				}
+				
 				$responseJSON = array(
 						'postInsert' => 1, // must be 1 for script.js
 				);
-
+				
 				applyCustomHeaders( $origin_site_address );
 				$responseJSON = json_encode( $responseJSON );
 
