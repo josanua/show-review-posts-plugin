@@ -9,7 +9,7 @@
  * Plugin Name:       Hapigood reviews plugin
  * Plugin URI:        simpals.com
  * Description:       This is a custom Hapigood plugin for reviews showing
- * Version:           3.0.0
+ * Version:           3.0.1
  * Author:            Simpals Dev
  * Author URI:        simpals.com
  * License:           GPL-2.0+
@@ -469,7 +469,7 @@ add_action( 'admin_post_nopriv_srp', 'srp_post_handler' );
  */
 require dirname( __FILE__ ) . '/plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	'https://github.com/josanua/test-wp-plugin',
+	'https://github.com/ChesterX/show-review-posts-plugin',
 	__FILE__,
 	'show_review_posts'
 );
